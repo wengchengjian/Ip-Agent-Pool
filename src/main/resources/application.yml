@@ -1,0 +1,77 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ip_agent_pool
+    username: root
+    password: wcj520600
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      enable: true
+  task:
+    scheduling:
+      pool:
+        size: 10
+
+agent:
+  retry-times: 2
+  ip-agents:
+    - site-name: "http://www.66ip.cn/"
+      analyzeTr: "//div[@class='containerbox boxindex']//table/tbody/tr"
+      position:
+        ip: 1
+        port: 2
+        anonymity: 4
+        address: 3
+      nextLinkRegex: "http://www.66ip.cn/\\d+.html"
+    - site-name: "https://www.89ip.cn/"
+      analyzeTr: "//div[@class='layui-col-md8']//table/tbody/tr"
+      position:
+        ip: 1
+        port: 2
+        anonymity: -1
+        address: 3
+      nextLinkRegex: "https://www.89ip.cn/index_\\d+.html"
+    - site-name: "https://free.kuaidaili.com/free/"
+      analyzeTr: "//div[@id='list']/table/tbody/tr"
+      position:
+        ip: 1
+        port: 2
+        anonymity: 3
+        address: 5
+      nextLinkRegex: "https://free.kuaidaili.com/free/inha/\\d+/"
+    - site-name: "https://ip.ihuan.me/"
+      analyzeTr: "//div[@class='table-responsive']/table/tbody/tr"
+      position:
+        ip: 1
+        port: 2
+        anonymity: 7
+        address: 3
+      nextLinkRegex: "https://ip.ihuan.me/?page=\\w+"
+      rules:
+        ip:
+          rule: "/a/text()"
+          multi: false
+          clazz: java.lang.String
+        address:
+          rule: "/a/text()"
+          multi: true
+          clazz: java.lang.String
+          separator: "-"
+        anonymity:
+          rule: "/a/text()"
+          multi: false
+          clazz: java.lang.String
+    - site-name: "http://www.ip3366.net/"
+      analyzeTr: "//div[@id='list']/table/tbody/tr"
+      position:
+        ip: 1
+        port: 2
+        anonymity: 3
+        address: 6
+      nextLinkRegex: "http://www.ip3366.net/?stype=1&page=\\d+"
+mybatis-plus:
+  global-config:
+    banner: false
+    db-config:
+      logic-delete-value: id
+      logic-not-delete-value: 0
+      logic-delete-field: deleted
