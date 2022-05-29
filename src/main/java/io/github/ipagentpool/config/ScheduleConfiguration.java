@@ -15,26 +15,26 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
  */
 @Configuration
 @EnableScheduling
-public class ScheduleConfiguration  {
+public class ScheduleConfiguration implements SchedulingConfigurer {
 
-//    @Override
-//    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-//        taskRegistrar.setTaskScheduler(taskExecutor());
-//    }
-//
-//    @Bean("scheduleTaskExcutor")
-//    public TaskScheduler taskExecutor(){
-//        ThreadPoolTaskScheduler threadPoolTaskScheduler  = new ThreadPoolTaskScheduler();
-//        // 配置线程池大小
-//        threadPoolTaskScheduler.setPoolSize(Runtime.getRuntime().availableProcessors()+1);
-//        // 设置线程名
-//        threadPoolTaskScheduler.setThreadNamePrefix("task-scheduling-");
-//
-//        // 设置等待任务在关机时完成
-//        //    threadPoolTaskScheduler.setWaitForTasksToCompleteOnShutdown(true);
-//        // 设置等待终止时间
-//        // threadPoolTaskScheduler.setAwaitTerminationSeconds(60);
-//
-//        return threadPoolTaskScheduler;
-//    }
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        taskRegistrar.setTaskScheduler(taskExecutor());
+    }
+
+    @Bean("scheduleTaskExcutor")
+    public TaskScheduler taskExecutor(){
+        ThreadPoolTaskScheduler threadPoolTaskScheduler  = new ThreadPoolTaskScheduler();
+        // 配置线程池大小
+        threadPoolTaskScheduler.setPoolSize(Runtime.getRuntime().availableProcessors()+1);
+        // 设置线程名
+        threadPoolTaskScheduler.setThreadNamePrefix("task-scheduling-");
+
+        // 设置等待任务在关机时完成
+        //    threadPoolTaskScheduler.setWaitForTasksToCompleteOnShutdown(true);
+        // 设置等待终止时间
+        // threadPoolTaskScheduler.setAwaitTerminationSeconds(60);
+
+        return threadPoolTaskScheduler;
+    }
 }

@@ -13,7 +13,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -35,52 +37,64 @@ public class ValidIpTask {
 
     private volatile AtomicInteger num = new AtomicInteger(1);
 
+    private Map<Integer,Object> locks= new ConcurrentHashMap<>(64);
+
     /**
      * 每1分钟一百条的去验证
      */
+    @Async
     @Scheduled(cron = "0 0/1 * * * ?")
     public void validateIp1(){
-        CompletableFuture.runAsync(new Runnable() {
-            @Override
-            public void run() {
-                checkIp();
-            }
-        },asyncTaskExecutor);
+        checkIp();
     }
 
     public void checkIp(){
-        Page<IpAgentModel> ipByPage = ipAgentService.findIpByPage(num.getAndIncrement(), 100);
+        int getNum = num.getAndIncrement();
+        creatLock(getNum);
+        synchronized (locks.get(getNum)){
+            Page<IpAgentModel> ipByPage = ipAgentService.findIpByPage(num.getAndIncrement(), 100);
 
-        if(!ipByPage.hasNext()){
-            num.compareAndSet(num.intValue(),1);
-        }
+            if(!ipByPage.hasNext()){
+                num.compareAndSet(num.intValue(),1);
+            }
 
-        List<IpAgentModel> records = ipByPage.getRecords();
-        // 没有数据直接返回
-        if(records==null){
-            return;
-        }
-        List<IpAgentModel> valid = new ArrayList<>();
-        List<IpAgentModel> invalid = new ArrayList<>();
-        List<IpAgentModel> needRemoved = new ArrayList<>();
+            List<IpAgentModel> records = ipByPage.getRecords();
+            // 没有数据直接返回
+            if(records==null){
+                return;
+            }
+            List<IpAgentModel> valid = new ArrayList<>();
+            List<IpAgentModel> invalid = new ArrayList<>();
+            List<IpAgentModel> needRemoved = new ArrayList<>();
 
-        for (IpAgentModel record : records) {
+            for (IpAgentModel record : records) {
 
-            if(checkProxyIp(record.getIp(),record.getPort())){
-                // 限制最大分数
-                if(record.getScore()<10){
-                    valid.add(record);
-                }
-            }else{
-                if(record.getScore()<=0){
-                    needRemoved.add(record);
+                if(checkProxyIp(record.getIp(),record.getPort())){
+                    // 限制最大分数
+                    if(record.getScore()<10){
+                        valid.add(record);
+                    }
                 }else{
-                    invalid.add(record);
+                    if(record.getScore()<=0){
+                        needRemoved.add(record);
+                    }else{
+                        invalid.add(record);
+                    }
                 }
             }
+            ipAgentService.incrementByScore(valid);
+            ipAgentService.uncrementByScore(invalid);
+            ipAgentService.removeByIds(needRemoved.stream().map(IpAgentModel::getId).collect(Collectors.toList()));
         }
-        ipAgentService.incrementByScore(valid);
-        ipAgentService.uncrementByScore(invalid);
-        ipAgentService.removeByIds(needRemoved.stream().map(IpAgentModel::getId).collect(Collectors.toList()));
+    }
+
+    private Object lock = new Object();
+
+    private void creatLock(int num) {
+        if(locks.get(num)==null){
+            synchronized (lock){
+                locks.computeIfAbsent(num, k -> new Object());
+            }
+        }
     }
 }

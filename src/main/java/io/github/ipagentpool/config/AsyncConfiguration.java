@@ -28,7 +28,7 @@ public class AsyncConfiguration implements AsyncConfigurer {
     public AsyncTaskExecutor taskExecutor(){
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // 设置核心线程数
-        executor.setCorePoolSize(0);
+        executor.setCorePoolSize(10);
         // 设置最大线程数
         executor.setMaxPoolSize(Runtime.getRuntime().availableProcessors() * 10);
         // 设置队列容量
@@ -36,7 +36,7 @@ public class AsyncConfiguration implements AsyncConfigurer {
         // 设置线程活跃时间（秒）
         executor.setKeepAliveSeconds(60);
         // 设置默认线程名称
-        executor.setThreadNamePrefix("async-task");
+        executor.setThreadNamePrefix("async-task-");
         // 设置拒绝策略
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         // 等待所有任务结束后再关闭线程池

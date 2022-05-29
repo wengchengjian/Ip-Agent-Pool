@@ -38,6 +38,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -75,25 +76,13 @@ public class ReptileTask {
     public void crawlSite(){
         Spider spider = createSpider();
 
-        CompletableFuture.runAsync(spider,asyncTaskExecutor);
+        CompletableFuture<Void> future = CompletableFuture.runAsync(spider, asyncTaskExecutor).orTimeout(60, TimeUnit.SECONDS);
 
-        long startTime = System.currentTimeMillis();
-
-        while (true){
-            try {
-                Thread.sleep(1000);
-
-                long spendTime = System.currentTimeMillis() -startTime;
-
-                if(spendTime>=60*1000){
-                    spider.stop();
-                    break;
-                }
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-        }
+        future.exceptionally((e)->{
+            spider.stop();
+            return null;
+        });
+        future.join();
     }
     public Spider createSpider(){
         String[] collectSites = properties.getIpAgents().stream().map(AgentSiteProperties.IpAgent::getSiteName).collect(Collectors.toList()).toArray(new String[0]);
