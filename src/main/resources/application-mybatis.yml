@@ -1,0 +1,7 @@
+mybatis-plus:
+  global-config:
+    banner: false
+    db-config:
+      logic-delete-value: id
+      logic-not-delete-value: 0
+      logic-delete-field: deleted
