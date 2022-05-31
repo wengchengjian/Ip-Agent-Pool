@@ -23,7 +23,7 @@ public class IpAgentServiceImpl extends ServiceImpl<IpAgentModelMapper,IpAgentMo
     @Override
     public Page<IpAgentModelVo> findIpByPageVO(Integer pageNum, Integer pageSize) {
         Page<IpAgentModel> page = new Page<>(pageNum,pageSize);
-        this.baseMapper.selectPage(page, new LambdaQueryWrapper<IpAgentModel>().orderByDesc(IpAgentModel::getScore));
+        this.baseMapper.selectPage(page, new LambdaQueryWrapper<IpAgentModel>().ge(IpAgentModel::getScore,5).orderByDesc(IpAgentModel::getScore));
 
         List<IpAgentModelVo> res = new ArrayList<>();
         for (IpAgentModel record : page.getRecords()) {
@@ -37,7 +37,7 @@ public class IpAgentServiceImpl extends ServiceImpl<IpAgentModelMapper,IpAgentMo
     @Override
     public Page<IpAgentModel> findIpByPage(Integer pageNum, Integer pageSize) {
         Page<IpAgentModel> page = new Page<>(pageNum,pageSize);
-        this.baseMapper.selectPage(page, new LambdaQueryWrapper<IpAgentModel>().orderByDesc(IpAgentModel::getScore));
+        this.baseMapper.selectPage(page, new LambdaQueryWrapper<IpAgentModel>().ge(IpAgentModel::getScore,5).orderByDesc(IpAgentModel::getScore));
         return page;
     }
 

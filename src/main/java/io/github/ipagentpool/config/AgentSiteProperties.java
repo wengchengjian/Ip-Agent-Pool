@@ -1,7 +1,6 @@
 package io.github.ipagentpool.config;
 
 import io.github.ipagentpool.model.IpAgentModel;
-import io.github.ipagentpool.processor.CustomAfterProcess;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

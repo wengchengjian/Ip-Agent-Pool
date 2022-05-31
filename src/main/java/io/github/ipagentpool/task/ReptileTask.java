@@ -75,14 +75,7 @@ public class ReptileTask {
     @Scheduled(cron = "0 0/2 * * * ?")
     public void crawlSite(){
         Spider spider = createSpider();
-
-        CompletableFuture<Void> future = CompletableFuture.runAsync(spider, asyncTaskExecutor).orTimeout(60, TimeUnit.SECONDS);
-
-        future.exceptionally((e)->{
-            spider.stop();
-            return null;
-        });
-        future.join();
+        spider.run();
     }
     public Spider createSpider(){
         String[] collectSites = properties.getIpAgents().stream().map(AgentSiteProperties.IpAgent::getSiteName).collect(Collectors.toList()).toArray(new String[0]);

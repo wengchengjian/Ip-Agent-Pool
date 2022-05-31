@@ -6,10 +6,9 @@ import io.github.ipagentpool.dto.IpAgentModelVo;
 import io.github.ipagentpool.service.IpAgentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @Author 翁丞健
@@ -30,7 +29,29 @@ public class IpAgentController {
         try{
             return Result.Success(ipAgentService.findIpByPageVO(pageNum,pageSize));
         }catch (Exception e){
-            log.error("查询代理ip失败,原因:{}",e.getMessage());
+            log.error("query proxy ip failed,reason:{}",e.getMessage());
+            return Result.Failure();
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public Result delete(@RequestParam("id") Long id){
+        try{
+            boolean isDeleted = ipAgentService.removeById(id);
+            return isDeleted ? Result.Success() : Result.Failure();
+        }catch (Exception e){
+            log.error("delete proxy ip failed, reason:{}",e.getMessage());
+            return Result.Failure();
+        }
+    }
+
+    @DeleteMapping("/deleteBatch")
+    public Result deleteBath(@RequestParam("ids") List<Long> ids){
+        try{
+            boolean isDeleted = ipAgentService.removeByIds(ids);
+            return isDeleted ? Result.Success() : Result.Failure();
+        }catch (Exception e){
+            log.error("batch delete proxy ip failed, reason:{}",e.getMessage());
             return Result.Failure();
         }
     }

@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class IpAgentPageProcessor implements PageProcessor {
 
+    private static final Integer MAX_CRAWL_NUM = 10;
+
     private final AgentSiteProperties properties;
 
     private static final Integer SLEEP_TIME  = 1000;
@@ -73,6 +75,14 @@ public class IpAgentPageProcessor implements PageProcessor {
                 Map<String, AgentSiteProperties.IpAgent.Rule> rules = ipAgent.getRules();
 
                 List<Selectable> nodes = page.getHtml().xpath(ipAgent.getAnalyzeTr()).nodes();
+
+                /**
+                 *  没有期望中的节点直接返回
+                 */
+                if(nodes==null || nodes.size()==0){
+                    return;
+                }
+
                 for(int i =1;i<nodes.size();i++){
 
                     Selectable node = nodes.get(i);
@@ -115,7 +125,6 @@ public class IpAgentPageProcessor implements PageProcessor {
                 }
                 page.putField("models", res);
                 page.addTargetRequests(page.getHtml().links().regex(String.format("(%s)", nextLinkRegex)).all());
-                break;
             }
 
         }
