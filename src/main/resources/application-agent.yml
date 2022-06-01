@@ -64,3 +64,10 @@ agent:
       rules:
         updateTime:
           fomatter: io.github.ipagentpool.spider.fomatter.IP336StringToDateFormatter
+    - acquire-type: Passive
+      acquire-proxy-url: http://webapi.http.zhimacangku.com/getip?num=1&type=2&pro=&city=0&yys=0&port=1&time=1&ts=0&ys=0&cs=1&lb=1&sb=0&pb=4&mr=1&regions=
+      host: "webapi.http.zhimacangku.com"
+      token-url: https://wapi.http.linkudp.com/index/users/login_do
+      username: "18682766240"
+      password: "wcj520600"
+

@@ -1,5 +1,6 @@
 package io.github.ipagentpool.config;
 
+import io.github.ipagentpool.common.AcquireType;
 import io.github.ipagentpool.model.IpAgentModel;
 import io.github.ipagentpool.spider.fomatter.Fomatter;
 import io.github.ipagentpool.spider.fomatter.StringToDateFormatter;
@@ -38,6 +39,18 @@ public class AgentSiteProperties {
 
     @Data
     public static class IpAgent{
+
+        private AcquireType acquireType = AcquireType.Active;
+
+        private String acquireProxyUrl;
+
+        private String username;
+
+        private String password;
+
+        private String host;
+
+        private String tokenUrl;
 
         /**
          * 第三方免费ip代理网站名
