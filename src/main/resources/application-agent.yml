@@ -1,5 +1,4 @@
 agent:
-  retry-times: 2
   ip-agents:
     - site-name: "http://www.66ip.cn/"
       analyzeTr: "//div[@class='containerbox boxindex']//table/tbody/tr"
@@ -8,6 +7,10 @@ agent:
         port: 2
         anonymity: 4
         address: 3
+        updateTime: 5
+      rules:
+        updateTime:
+          fomatter: io.github.ipagentpool.spider.fomatter.IP66StringToDateFormatter
       nextLinkRegex: "http://www.66ip.cn/\\d+.html"
     - site-name: "https://www.89ip.cn/"
       analyzeTr: "//div[@class='layui-col-md8']//table/tbody/tr"
@@ -16,6 +19,10 @@ agent:
         port: 2
         anonymity: -1
         address: 3
+        updateTime: 5
+      rules:
+        updateTime:
+          fomatter: io.github.ipagentpool.spider.fomatter.IP89StringToDateFormatter
       nextLinkRegex: "https://www.89ip.cn/index_\\d+.html"
     - site-name: "https://free.kuaidaili.com/free/"
       analyzeTr: "//div[@id='list']/table/tbody/tr"
@@ -24,6 +31,7 @@ agent:
         port: 2
         anonymity: 3
         address: 5
+        updateTime: 7
       nextLinkRegex: "https://free.kuaidaili.com/free/inha/\\d+/"
     - site-name: "https://ip.ihuan.me/"
       analyzeTr: "//div[@class='table-responsive']/table/tbody/tr"
@@ -32,21 +40,18 @@ agent:
         port: 2
         anonymity: 7
         address: 3
-      nextLinkRegex: "https://ip.ihuan.me/?page=\\w+"
+        updateTime: 10
+      nextLinkRegex: "https://ip.ihuan.me/\\?page=\\w+"
       rules:
         ip:
           rule: "/a/text()"
-          multi: false
-          clazz: java.lang.String
         address:
           rule: "/a/text()"
           multi: true
-          clazz: java.lang.String
-          separator: "-"
         anonymity:
           rule: "/a/text()"
-          multi: false
-          clazz: java.lang.String
+        updateTime:
+          fomatter: io.github.ipagentpool.spider.fomatter.IHuanStringToDateFormatter
     - site-name: "http://www.ip3366.net/"
       analyzeTr: "//div[@id='list']/table/tbody/tr"
       position:
@@ -54,4 +59,8 @@ agent:
         port: 2
         anonymity: 3
         address: 6
-      nextLinkRegex: "http://www.ip3366.net/?stype=1&page=\\d+"
+        updateTime: 8
+      nextLinkRegex: "http://www.ip3366.net/\\?stype=1&page=\\d+"
+      rules:
+        updateTime:
+          fomatter: io.github.ipagentpool.spider.fomatter.IP336StringToDateFormatter

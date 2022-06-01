@@ -1,4 +1,4 @@
-package io.github.ipagentpool.pipeline;
+package io.github.ipagentpool.spider.pipeline;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.github.ipagentpool.model.IpAgentModel;
@@ -33,13 +33,15 @@ public class MysqlIpAgentPipeline implements Pipeline {
         Set<IpAgentModel> updated = new HashSet<>();
 
         for (IpAgentModel model : models) {
-            IpAgentModel one = ipAgentService.getOne(new LambdaQueryWrapper<IpAgentModel>().eq(IpAgentModel::getIp, model.getIp()).eq(IpAgentModel::getPort, model.getPort()));
+            if(model!=null){
+                IpAgentModel one = ipAgentService.getOne(new LambdaQueryWrapper<IpAgentModel>().eq(IpAgentModel::getIp, model.getIp()).eq(IpAgentModel::getPort, model.getPort()));
 
-            if(one!=null){
-                model.setId(one.getId());
-                updated.add(model);
-            }else{
-                saved.add(model);
+                if(one!=null){
+                    model.setId(one.getId());
+                    updated.add(model);
+                }else{
+                    saved.add(model);
+                }
             }
         }
         ipAgentService.saveBatch(saved);

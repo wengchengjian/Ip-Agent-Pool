@@ -18,10 +18,4 @@ public interface IpAgentService extends IService<IpAgentModel> {
 
     Page<IpAgentModel> findIpByPage(Integer pageNum, Integer pageSize);
 
-
-    @Transactional(rollbackFor = Exception.class)
-    void incrementByScore(List<IpAgentModel> valid);
-
-    @Transactional(rollbackFor = Exception.class)
-    void uncrementByScore(List<IpAgentModel> invalid);
 }

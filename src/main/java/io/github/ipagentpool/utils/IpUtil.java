@@ -1,6 +1,7 @@
 package io.github.ipagentpool.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -10,6 +11,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.cookie.CookieSpec;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
@@ -24,6 +26,8 @@ public class IpUtil {
     private static final String  USER_AGENT =  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36";
 
     private static final String DEFAULT_REQUEST_URL = "http://www.baidu.com";
+
+    private static final String SEARCH_CONTENT = "百度一下，你就知道";
     /**
      * 代理IP有效检测
      *
@@ -45,14 +49,16 @@ public class IpUtil {
             HttpResponse response = client.execute(httpGet);
             int statuCode = response.getStatusLine().getStatusCode();
 
+            HttpEntity entity = response.getEntity();
+
             if(statuCode == 200){
-                log.info("{}:{} is valid",proxyIp,proxyPort);
-                return true;
+                if(EntityUtils.toString(entity,"utf-8").contains(SEARCH_CONTENT)){
+                    log.info("{}:{} is valid",proxyIp,proxyPort);
+                    return true;
+                }
             }
-            else{
-                log.info("{}:{} is invalid",proxyIp,proxyPort);
-                return false;
-            }
+            log.info("{}:{} is invalid",proxyIp,proxyPort);
+            return false;
 
         } catch (IOException e) {
             // TODO Auto-generated catch block

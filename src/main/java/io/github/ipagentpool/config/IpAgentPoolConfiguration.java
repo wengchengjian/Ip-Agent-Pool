@@ -1,16 +1,10 @@
 package io.github.ipagentpool.config;
 
-import io.github.ipagentpool.pipeline.MysqlIpAgentPipeline;
-import io.github.ipagentpool.processor.IpAgentPageProcessor;
-import org.apache.commons.lang3.ArrayUtils;
+import io.github.ipagentpool.spider.processor.IpAgentPageProcessor;
+import io.github.ipagentpool.spider.scheduler.IpAgentPoolScheduler;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import us.codecraft.webmagic.Spider;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @Author 翁丞健
@@ -26,5 +20,6 @@ public class IpAgentPoolConfiguration {
     public IpAgentPageProcessor ipAgentPageProcessor(AgentSiteProperties properties){
         return new IpAgentPageProcessor(properties);
     }
+
 }
 

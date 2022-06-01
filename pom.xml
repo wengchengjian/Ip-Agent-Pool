@@ -92,6 +92,61 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <!--使用docker-maven-plugin插件-->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.2.2</version>
+
+                <configuration>
+                    <!--镜像名称 Ryan-->
+                    <!-- 镜像名称必须全部小写 -->
+                    <imageName>wcj/ipagentpool</imageName>
+                    <!--指定标签-->
+                    <imageTags>
+                        <imageTag>latest</imageTag>
+                    </imageTags>
+                    <!--基础镜像jdk 1.8-->
+                    <baseImage>java11</baseImage>
+                    <!--切换到/ROOT目录-->
+                    <workdir>/ROOT</workdir>
+                    <!--<cmd>["java", "-version"]</cmd-->
+                    <entryPoint>["java","-jar","${project.build.finalName}.jar"]</entryPoint>
+
+                    <!--指定远程docker api地址-->
+                    <dockerHost>http://120.48.48.145:2375</dockerHost>
+
+                    <!--复制jar包到docker容器指定目录位置-->
+                    <resources>
+                        <resource>
+                            <targetPath>/root/ip-agent-pool</targetPath>
+                            <!--用于指定需要复制的根目录，${project.build.directory}表示target目录-->
+                            <directory>${project.build.directory}</directory>
+                            <!--用于指定需要复制的文件，${project.build.finalName}.jar表示打包后的jar文件-->
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
+                <executions>
+                    <!-- package之前清除上一次构建的image -->
+                    <execution>
+                        <id>remove-image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>removeImage</goal>
+                        </goals>
+                    </execution>
+                    <!--当执行mvn package时，执行：mvn  package docker:build-->
+                    <execution>
+                        <id>build-image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

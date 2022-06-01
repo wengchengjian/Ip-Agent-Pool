@@ -1,12 +1,17 @@
 package io.github.ipagentpool.config;
 
 import io.github.ipagentpool.model.IpAgentModel;
+import io.github.ipagentpool.spider.fomatter.Fomatter;
+import io.github.ipagentpool.spider.fomatter.StringToDateFormatter;
+import io.github.ipagentpool.spider.fomatter.StringToIntegerFomatter;
+import io.github.ipagentpool.spider.fomatter.StringToStringFomatter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,6 +58,7 @@ public class AgentSiteProperties {
             put("port",2);
             put("anonymity",3);
             put("address",4);
+            put("updateTime",5);
         }};
 
         /**
@@ -64,6 +70,7 @@ public class AgentSiteProperties {
             put("ip",Rule.DEFAULT_STRING_RULE);
             put("port",Rule.DEFAULT_INTEGER_RULE);
             put("address",Rule.DEFAULT_STRING_RULE);
+            put("updateTime",Rule.DEFAULT_DATE_RULE);
             put("anonymity",Rule.DEFAULT_STRING_RULE);}};
 
         @Data
@@ -73,28 +80,30 @@ public class AgentSiteProperties {
             /**
              * 提取规则
              */
-            private String rule;
+            private String rule = "/text()";
 
             /**
              * 是否多个
              */
-            private boolean multi;
+            private boolean multi = false;
 
             /**
              * 在multi为true的情况下生效，用于连接多个结果
              */
-            private String separator;
+            private String separator = "-";
 
             /**
              * 该字段的默认值
              */
             private T defaultValue;
 
-            private Class clazz;
+            private Class fomatter = StringToStringFomatter.class;
 
-            public static final Rule<String> DEFAULT_STRING_RULE = new Rule("/text()",false,null,null,String.class);
+            public static final Rule<String> DEFAULT_STRING_RULE = new Rule("/text()",false,null,null,StringToStringFomatter.class);
 
-            public static final Rule<Integer> DEFAULT_INTEGER_RULE = new Rule("/text()",false,null,null,Integer.class);
+            public static final Rule<Date> DEFAULT_DATE_RULE = new Rule("/text()",false,null,new Date(), StringToDateFormatter.class);
+
+            public static final Rule<Integer> DEFAULT_INTEGER_RULE = new Rule("/text()",false,null,80, StringToIntegerFomatter.class);
         }
 
 

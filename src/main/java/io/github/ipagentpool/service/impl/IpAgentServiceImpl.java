@@ -37,25 +37,10 @@ public class IpAgentServiceImpl extends ServiceImpl<IpAgentModelMapper,IpAgentMo
     @Override
     public Page<IpAgentModel> findIpByPage(Integer pageNum, Integer pageSize) {
         Page<IpAgentModel> page = new Page<>(pageNum,pageSize);
-        this.baseMapper.selectPage(page, new LambdaQueryWrapper<IpAgentModel>().ge(IpAgentModel::getScore,5).orderByDesc(IpAgentModel::getScore));
+        this.baseMapper.selectPage(page, new LambdaQueryWrapper<IpAgentModel>().ge(IpAgentModel::getScore,5).orderByDesc(IpAgentModel::getUpdateTime));
         return page;
     }
 
 
-    @Override
-    public void incrementByScore(List<IpAgentModel> valid) {
 
-        valid.forEach(item->{
-            item.setScore(item.getScore()+1);
-        });
-        saveOrUpdateBatch(valid);
-    }
-
-    @Override
-    public void uncrementByScore(List<IpAgentModel> invalid) {
-        invalid.forEach(item->{
-            item.setScore(item.getScore()-1);
-        });
-        saveOrUpdateBatch(invalid);
-    }
 }

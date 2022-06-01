@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://*****:****/ip_agent_pool
-    username: "****"
-    password: "****"
+    url: jdbc:mysql://120.48.48.145:3307/ip_agent_pool
+    username: root
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
     druid:
       enable: true
